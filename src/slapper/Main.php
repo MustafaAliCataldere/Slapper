@@ -322,7 +322,8 @@ class Main extends PluginBase implements Listener{
 							$entity = $sender->getLevel()->getEntity((int) $args[0]);
 							if($entity !== null){
 								if($entity instanceof SlapperEntity || $entity instanceof SlapperHuman){
-									$this->getServer()->getPluginManager()->callEvent(new SlapperDeletionEvent($entity));
+									$evt = new SlapperDeletionEvent($entity);
+									$evt->call();
 									$entity->close();
 									$sender->sendMessage($this->prefix . "Entity removed.");
 								}else{
@@ -653,7 +654,8 @@ class Main extends PluginBase implements Listener{
 							$nbt = $this->makeNBT($chosenType, $sender, $name);
 							/** @var SlapperEntity $entity */
 							$entity = Entity::createEntity("Slapper" . $chosenType, $sender->getLevel(), $nbt);
-							$this->getServer()->getPluginManager()->callEvent(new SlapperCreationEvent($entity, "Slapper" . $chosenType, $sender, SlapperCreationEvent::CAUSE_COMMAND));
+							$creation = new SlapperCreationEvent($entity, "Slapper" . $chosenType, $sender, SlapperCreationEvent::CAUSE_COMMAND);
+							$creation->call();
 							$entity->spawnToAll();
 							$sender->sendMessage($this->prefix . $chosenType . " entity spawned with name " . TextFormat::WHITE . "\"" . TextFormat::BLUE . $name . TextFormat::WHITE . "\"" . TextFormat::GREEN . " and entity ID " . TextFormat::BLUE . $entity->getId());
 							return true;
@@ -714,7 +716,8 @@ class Main extends PluginBase implements Listener{
 			if(!$damager instanceof Player){
 				return;
 			}
-			$this->getServer()->getPluginManager()->callEvent($event = new SlapperHitEvent($entity, $damager));
+			$event = new SlapperHitEvent($entity, $damager);
+			$event->call();
 			if($event->isCancelled()){
 				return;
 			}
