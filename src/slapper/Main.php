@@ -8,7 +8,7 @@ use pocketmine\block\BlockFactory;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
-use pocketmine\entity\Entity;
+use pocketmine\entity\EntityFactory;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntitySpawnEvent;
@@ -240,7 +240,7 @@ class Main extends PluginBase implements Listener{
 			        SlapperVindicator::class,
 			        SlapperWither::class
 		        ] as $className){
-			Entity::registerEntity($className, true);
+			EntityFactory::register($className, true);
 		}
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
@@ -653,7 +653,7 @@ class Main extends PluginBase implements Listener{
 							}
 							$nbt = $this->makeNBT($chosenType, $sender, $name);
 							/** @var SlapperEntity $entity */
-							$entity = Entity::createEntity("Slapper" . $chosenType, $sender->getLevel(), $nbt);
+							$entity = EntityFactory::create("Slapper" . $chosenType, $sender->getLevel(), $nbt);
 							$creation = new SlapperCreationEvent($entity, "Slapper" . $chosenType, $sender, SlapperCreationEvent::CAUSE_COMMAND);
 							$creation->call();
 							$entity->spawnToAll();
@@ -679,7 +679,7 @@ class Main extends PluginBase implements Listener{
 	 * @return CompoundTag
 	 */
 	private function makeNBT($type, Player $player, string $name) : CompoundTag{
-		$nbt = Entity::createBaseNBT($player, null, $player->getYaw(), $player->getPitch());
+		$nbt = EntityFactory::create($player, null, $player->getYaw(), $player->getPitch());
 		$nbt->setShort("Health", 1);
 		$nbt->setString("CustomName", $name);
 
